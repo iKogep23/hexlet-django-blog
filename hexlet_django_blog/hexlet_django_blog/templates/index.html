@@ -7,6 +7,8 @@
         <li><a href="/">Главная</a></li>
         <li><a href="/articles/">Статьи</a></li>
         <li><a href="/about/">О блоге</a></li>
+        <li><a href="{% url 'article_list' %}">Все статьи</a></li>
+        <li><a href="{% url 'about' %}">О сайте</a></li>
     </ul>
 {% endblock %}
 
