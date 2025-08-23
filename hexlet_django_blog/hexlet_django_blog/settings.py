@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-from dotenv import load_dotenv  # Импортируем environ
+from dotenv import load_dotenv  # Импортируем environment
 import os
 
 load_dotenv()  # Загрузка переменных окружения из файла .env
@@ -120,6 +120,14 @@ TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
 
 USE_TZ = True
+
+# формат вывода
+TIME_FORMAT = 'H:i'
+DATETIME_FORMAT = 'd.m.Y H:i'
+
+# чтобы формы принимали ввод в таком же виде
+TIME_INPUT_FORMATS = ['%H:%M', '%H:%M:%S']
+DATETIME_INPUT_FORMATS = ['%d.%m.%Y %H:%M', '%Y-%m-%d %H:%M:%S']
 
 
 # Static files (CSS, JavaScript, Images)

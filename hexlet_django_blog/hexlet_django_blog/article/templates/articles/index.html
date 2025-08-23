@@ -1,1 +1,9 @@
-<h1>Hello, {{ who }}!</h1>
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Список статей</h1>
+    {% for article in articles %}
+        <h3><a href="{% url 'article_detail' id=forloop.counter %}">{{ article.name }}</a></h3>
+        <div>{{ article.body|slice:":200" }}</div>
+    {% endfor %}
+{% endblock %}
