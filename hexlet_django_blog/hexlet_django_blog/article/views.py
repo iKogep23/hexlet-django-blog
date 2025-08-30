@@ -4,6 +4,8 @@ from django.views import View
 from hexlet_django_blog.views import IndexView
 
 from hexlet_django_blog.article.models import Article
+from .forms import CommentArticleForm
+from .models import ArticleComment
 
 
 #def index(request):
@@ -51,6 +53,7 @@ class ArticleListView(IndexView):
         context['articles'] = ARTICLES
         return context
 
+
 class ArticleDetailView(IndexView):
     template_name = "articles/article_detail.html"
 
@@ -60,6 +63,7 @@ class ArticleDetailView(IndexView):
         article = next((a for a in ARTICLES if a['id'] == article_id), None)
         context['article'] = article
         return context
+
 
 class IndexView(View):
     def get(self, request, *args, **kwargs):
@@ -72,6 +76,7 @@ class IndexView(View):
             },
         )
 
+
 class ArticleView(View):
     def get(self, request, *args, **kwargs):
         article = get_object_or_404(Article, id=kwargs['id'])
@@ -82,4 +87,51 @@ class ArticleView(View):
                 "article": article,
             }
         )
+
+
+class ArticleFormCreateView(View):
+    def get(self, request, *args, **kwargs):
+        form = ArticleForm()
+        return render(request, "article/create.html", {"form": form})
+
+    def post(self, request, *args, **kwargs):
+        form = ArticleForm(request.POST)
+        if form.is_valid():  # Если данные формы корректные, то сохраняеем
+            form.save()
+            return redirect('articles')  # Редирект на указанный маршрут
+        # Если данные некорректные, то возвращаем человека обратно на страницу с заполненной формой
+        return render(request, 'articles/create.html', {'form': form})
+
+
+class CommentArticleView(View):
+    # если метод POST, то мы обрабатываем данные
+    def post(self, request, *args, **kwargs):
+        form = CommentArticleForm(request.POST)  # Получаем данные из запроса
+        if form.is_valid():  # Проверяем данные на корректность
+            comment = ArticleComment(
+                content=form.cleaned_data["content"],  # Получаем очищенные данные из поля content
+            )  # и создаем новый комментарий
+            comment.save()
+
+    # если метод GET, то создаем пустую форму
+    def get(self, request, *args, ** kwargs):
+        form = CommentArticleForm()  # Создаем экземпляр нашей формы
+        return render(
+            request, "comment.html", {"form": form}
+        )  # Передаем нашу форму в контексте
+
+
+class ArticleCommentFormView(View):
+    def post(self, request, *args, **kwargs):
+        form = ArticleCommentForm(request.POST)  # Получаем данные формы из запроса
+        if form.is_valid():  # Проверяем данные формы на корректность
+#            form.save()  # Сохраняем форму, но можно вместо этого дополнительно обработать данные формы
+            comment = form.save(commit=False)  # Получаем заполненную модель
+            # Дополнительно обрабатываем модель чрез стороннюю функцию, которую нужно подключить
+            # либо путем импорта из сторонней библиотеки (например, сервис akismet:
+            # from akismet import check_for_spam), либо самостоятельной реализации:
+            # from .utils import check_for_spam
+#            comment.content = check_for_spam(form.data["content"])
+            comment.save()
+
 # Create your views here.

@@ -7,4 +7,5 @@ urlpatterns = [
     path('', views.IndexView.as_view(), name='article_list'),
 #    path('<int:article_id>/', views.ArticleDetailView.as_view(), name='article_detail'),
     path('<int:id>/', views.ArticleView.as_view(), name='article_detail'),
+    path("create/", views.ArticleFormCreateView.as_view(), name="article_create"),
 ]
